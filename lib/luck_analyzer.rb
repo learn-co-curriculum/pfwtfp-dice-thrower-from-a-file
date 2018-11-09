@@ -20,6 +20,10 @@ class LuckAnalyzer
     name_to_trials_count.min_by{ |pair| pair[1] }
   end
 
+  def most_trials_slice
+    name_to_trials_count.max_by{ |pair| pair[1] }
+  end
+
   def common_number_of_trials
     least_trials_slice.last
   end
@@ -29,7 +33,7 @@ class LuckAnalyzer
   end
 
   def most_trials_candidate
-    name_to_trials_count.max_by{ |pair| pair[1] }[0]
+    most_trials_slice.first
   end
 
   def luckiest
