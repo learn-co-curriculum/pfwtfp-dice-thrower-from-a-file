@@ -9,21 +9,25 @@ class LuckAnalyzer
     @csv_data = CSV.read(file_path)
   end
 
-  def common_number_of_trials
-    name_to_trials = {}
+  def name_to_trials_count
+    result = {}
 
     csv_data.each do |row|
       name = row[1]
-      if !name_to_trials.has_key?(name)
-        name_to_trials[name] = 0
+      if !result.has_key?(name)
+        result[name] = 0
       end
-      name_to_trials[name] += 1
+      result[name] += 1
     end
 
+    result
+  end
+
+  def common_number_of_trials
     minimum_value = nil
     minimum_name = nil
 
-    name_to_trials.each_pair do |k, v|
+    name_to_trials_count.each_pair do |k, v|
       # Initialize to the first the first time around
       if minimum_value.nil? &&  minimum_name.nil?
         minimum_value = v
@@ -39,20 +43,10 @@ class LuckAnalyzer
   end
 
   def least_trials_candidate
-    name_to_trials = {}
-
-    csv_data.each do |row|
-      name = row[1]
-      if !name_to_trials.has_key?(name)
-        name_to_trials[name] = 0
-      end
-      name_to_trials[name] += 1
-    end
-
     minimum_value = nil
     minimum_name = nil
 
-    name_to_trials.each_pair do |k, v|
+    name_to_trials_count.each_pair do |k, v|
       # Initialize to the first the first time around
       if minimum_value.nil? &&  minimum_name.nil?
         minimum_value = v
@@ -68,20 +62,10 @@ class LuckAnalyzer
   end
 
   def most_trials_candidate
-    name_to_trials = {}
-
-    csv_data.each do |row|
-      name = row[1]
-      if !name_to_trials.has_key?(name)
-        name_to_trials[name] = 0
-      end
-      name_to_trials[name] += 1
-    end
-
     maximum_value = nil
     maximum_name = nil
 
-    name_to_trials.each_pair do |k, v|
+    name_to_trials_count.each_pair do |k, v|
       # Initialize to the first the first time around
       if maximum_value.nil? &&  maximum_name.nil?
         maximum_value = v
