@@ -10,14 +10,10 @@ class LuckAnalyzer
   end
 
   def name_to_trials_count
-    result = {}
+    result = Hash.new{ |h, k| h[k] = 0 }
 
     csv_data.each do |row|
-      name = row[1]
-      if !result.has_key?(name)
-        result[name] = 0
-      end
-      result[name] += 1
+      result[row[1]] += 1
     end
 
     result
