@@ -24,26 +24,7 @@ class LuckAnalyzer
   end
 
   def least_trials_slice
-    minimum_value = nil
-    minimum_name = nil
-    minimum_pair = nil
-
-    name_to_trials_count.each do |pair|
-      k,v = pair
-      # Initialize to the first the first time around
-      if minimum_value.nil? &&  minimum_name.nil?
-        minimum_value = v
-        minimum_name = k
-        minimum_pair = pair
-      end
-
-      if minimum_value > v
-        minimum_value = v
-        minimum_name = k
-        minimum_pair = pair
-      end
-    end
-    minimum_pair
+    name_to_trials_count.min_by{ |pair| pair[1] }
   end
 
   def common_number_of_trials
@@ -55,22 +36,7 @@ class LuckAnalyzer
   end
 
   def most_trials_candidate
-    maximum_value = nil
-    maximum_name = nil
-
-    name_to_trials_count.each_pair do |k, v|
-      # Initialize to the first the first time around
-      if maximum_value.nil? &&  maximum_name.nil?
-        maximum_value = v
-        maximum_name = k
-      end
-
-      if maximum_value < v
-        maximum_value = v
-        maximum_name = k
-      end
-    end
-    maximum_name
+    name_to_trials_count.max_by{ |pair| pair[1] }[0]
   end
 
   def luckiest
