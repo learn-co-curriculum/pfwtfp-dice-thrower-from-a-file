@@ -10,13 +10,10 @@ class LuckAnalyzer
   end
 
   def name_to_trials_count
-    result = Hash.new{ |h, k| h[k] = 0 }
-
-    csv_data.each do |row|
-      result[row[1]] += 1
+    csv_data.reduce(Hash.new(0)) do |memo, row|
+      memo[row[1]] += 1
+      memo # always return the memo!
     end
-
-    result
   end
 
   def least_trials_slice
