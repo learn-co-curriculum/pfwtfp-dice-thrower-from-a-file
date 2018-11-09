@@ -36,41 +36,35 @@ class LuckAnalyzer
     most_trials_slice.first
   end
 
+  def create_dice_roll(max_pips, summary)
+    die_values = summary.split(',').map(&:to_i)
+    DiceRoller.new(die_values.length, max_pips, die_values)
+  end
+
+  def name_to_dice_rolls
+    csv_data.reduce(Hash.new([])) do |memo, row|
+      memo[row[1]] += [ create_dice_roll(row[2], row[3]) ]
+      memo
+    end
+  end
+
+  def name_to_rolls_lucky_status
+    name_to_dice_rolls.reduce({}) do |memo, pair|
+      memo[pair[0]] = pair[1].map(&:lucky?)
+      memo
+    end
+  end
+
+  def name_to_luck_percentages
+    name_to_rolls_lucky_status.reduce({}) do |memo, pair|
+      lucky_count = pair.last.select{|x| x}.length
+      memo[pair.first] = lucky_count / Float(common_number_of_trials) * 100
+      memo
+    end
+  end
+
   def luckiest
-    name_to_trials = {}
-    name_to_lucky_percentages = {}
-
-    csv_data.each do |row|
-      name = row[1]
-      if !name_to_trials.has_key?(name)
-        name_to_trials[name] = []
-      end
-      die_values = row[3].split(',')
-      die_values_as_integers = die_values.map { |v| v.to_i }
-      name_to_trials[name] << DiceRoller.new(die_values.length, row[2],die_values_as_integers).lucky?
-    end
-
-    name_to_trials.each_pair do |name, sets|
-      lucky_count = sets.select{|x| x}.length
-      name_to_lucky_percentages[name] = lucky_count / Float(common_number_of_trials) * 100
-    end
-
-    maximum_value = nil
-    maximum_name = nil
-
-    name_to_lucky_percentages.each_pair do |k, v|
-      # Initialize to the first the first time around
-      if maximum_value.nil? &&  maximum_name.nil?
-        maximum_value = v
-        maximum_name = k
-      end
-
-      if maximum_value < v
-        maximum_value = v
-        maximum_name = k
-      end
-    end
-
-    return "#{maximum_name} (#{maximum_value.round})"
+    luckiest_c = name_to_luck_percentages.max_by{ |e| e.last }
+    return "#{luckiest_c[0]} (#{luckiest_c[1].round})"
   end
 end
